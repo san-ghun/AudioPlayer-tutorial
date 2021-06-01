@@ -99,5 +99,33 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         self.player.currentTime = TimeInterval(sender.value)
     }
     
+    // MARK: AVAudioPlayerDelegate
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        
+        guard let error: Error = error else {
+            print("오디오 플레이어 디코드 오류발생")
+            return
+        }
+        
+        let message: String
+        message = "오디오 플레이어 오류 발생 \(error.localizedDescription)"
+        
+        let alert: UIAlertController = UIAlertController(title: "알림", message: message, preferredStyle: UIAlertController.Style.alert)
+        let okAction: UIAlertAction = UIAlertAction(title: "확인", style: UIAlertAction.Style.default) { (action: UIAlertAction) -> Void in
+            
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.playPauseButton.isSelected = false
+        self.progressSlider.value = 0
+        self.updateTimeLabelText(time: 0)
+        self.invalidateTimer()
+    }
+    
 }
 
